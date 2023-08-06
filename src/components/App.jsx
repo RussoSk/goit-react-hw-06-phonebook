@@ -3,16 +3,17 @@
 //App.jsx
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-
+import { nanoid } from 'nanoid';
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
+import { selectContacts, selectFilter } from 'redux/selectors';
 import { addContact, deleteContact, setFilter } from '../redux/contactsSlice';
 import css from './App.module.css';
 
 const App = () => {
-  const contacts = useSelector((state) => state.contacts.value);
-  const filter = useSelector((state) => state.filter.value);
+  const contacts = useSelector(selectContacts);
+  const filter = useSelector(selectFilter);
   const dispatch = useDispatch();
 
   const addContactHandler = (name, number) => {
@@ -20,8 +21,12 @@ const App = () => {
       alert(`Contact "${name}" is already in contacts.`);
       return;
     }
-
-    dispatch(addContact({ name, number }));
+    const newContact = {
+      id: nanoid(),
+      name,
+      number,
+    };
+    dispatch(addContact(newContact));
   };
 
   const deleteContactHandler = (contactId) => {
